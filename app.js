@@ -28,7 +28,7 @@ const yesterday = moment().subtract(1, "day").format("YYYY-MM-DD")
 
 const outputFile = path.join(__dirname, "out", `${yesterday}.csv`)
 
-const outputFileRemote = `/root/report/${yesterday}.csv`
+const outputFileRemote = `${process.env.FTP_REMOTE_DIR}/${yesterday}.csv`
 
 
 const sql = `select r.suuid, r.msisdn, r.createdAt, r.customer_type,  r.originalPayload, g.niaData
