@@ -23,8 +23,6 @@ const connection = mysql.createConnection({
 
 
 const yesterday = moment().subtract(1, "day").format("YYYY-MM-DD")
-//const yesterday = '2022-10-22 10:10:07'
-
 
 const outputFile = path.join(__dirname, "out", `${yesterday}.csv`)
 
@@ -38,7 +36,7 @@ on r.cardNumber = g.pinNumber
 where r.createdAt like '${yesterday}%'`
 
 
-connection.query(sql, (err, result, fields) => {
+connection.query(sql, (err, result) => {
     if (err) {
         console.log(err)
 
