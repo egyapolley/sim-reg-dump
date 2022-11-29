@@ -7,8 +7,6 @@ const {Client} = require('ssh2');
 const conn = new Client();
 
 
-
-
 const path = require("path")
 
 const csv = require("fast-csv")
@@ -29,7 +27,7 @@ const outputFile = path.join(__dirname, "out", `SIM_Registration_Dump_${yesterda
 const outputFileRemote = `${process.env.FTP_REMOTE_DIR}/SIM_Registration_Dump_${yesterday}.csv`
 
 
-const sql = `select r.suuid, r.msisdn, r.createdAt, r.customer_type,  r.originalPayload, g.niaData
+const sql = `select r.suuid, r.msisdn, r.createdAt, r.customer_type, r.businessName,  r.originalPayload, g.niaData
 from registeredMsisdn r
 INNER JOIN ghanaIds g
 on r.cardNumber = g.pinNumber
@@ -47,6 +45,7 @@ connection.query(sql, (err, result) => {
                 const {
                     suuid,
                     msisdn,
+                    businessName,
                     createdAt: registration_date,
                     customer_type: registration_type,
                     originalPayload,
@@ -72,11 +71,27 @@ connection.query(sql, (err, result) => {
                 } = nia_data
 
                 final_data.push({
-                    entity: "Individual",
-                    businessEntity: null,
+                    entity: businessName ? "Business" : "Individual",
+                    businessEntity: businessName ? businessName : null,
                     businessCertificate: null,
-                    first_name, surname, dob, id_type, id_number, dateOfExpiry, nationality, gender, NIADigitalAddress,
-                    digital_address, imsi: null, msisdn, suuid, registration_date:moment(registration_date).format(),bcap_date:moment(registration_date).format(),UUID:null,biometricVerification:null,registration_type
+                    first_name,
+                    surname,
+                    dob,
+                    id_type,
+                    id_number,
+                    dateOfExpiry,
+                    nationality,
+                    gender,
+                    NIADigitalAddress,
+                    digital_address,
+                    imsi: null,
+                    msisdn,
+                    suuid,
+                    registration_date: moment(registration_date).format(),
+                    bcap_date: moment(registration_date).format(),
+                    UUID: null,
+                    biometricVerification: null,
+                    registration_type
                 })
 
             }
@@ -102,8 +117,6 @@ connection.query(sql, (err, result) => {
                 username: process.env.FTP_USER,
                 password: process.env.FTP_PASS
             });
-
-
 
 
         }
